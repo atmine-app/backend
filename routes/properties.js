@@ -20,9 +20,10 @@ router.get('/:propertyId', async (req, res, next) => {
 // @desc    Create one property
 // @route   POST /property
 // @access  Private
-router.post('/', isAuthenticated,async (req, res, next) => {
+router.post('/', isAuthenticated, async (req, res, next) => {
+    const userId = req.payload._id;
    try {
-        const newProperty = await Property.create(req.body);
+        const newProperty = await Property.create({ ...req.body, user: userId });
         res.status(201).json(newProperty);
    } catch (error) {
         next(error);

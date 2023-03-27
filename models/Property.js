@@ -26,6 +26,9 @@ const propertySchema = new Schema({
   city: { type: String, required: true },
   country: { type: String, required: true },
   zipCode: { type: String, required: true },
+},
+{
+  timestamps: true
 });
 
 module.exports = model("Property", propertySchema);

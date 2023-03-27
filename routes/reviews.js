@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Review = require('../models/Review');
 const { isAuthenticated } = require('../middlewares/jwt');
+const User = require('../models/User');
 
 // @desc    Get one review
 // @route   GET /reviews/:reviewId
@@ -18,9 +19,12 @@ router.get('/:reviewId', async (req, res, next) => {
 // @desc    Create one review
 // @route   POST /reviews
 // @access  Private
-router.post('/',isAuthenticated, async (req, res, next) => {
+router.post('/:propertyId',isAuthenticated, async (req, res, next) => {
+    const { propertyId } = req.params;
+    const userId = req.payload._id;
+    const review = req.body;
     try {
-        const newReview = await Review.create(req.body);
+        const newReview = await Review.create({review:review, property: propertyId, user: userId});
         res.status(201).json(newReview);
     } catch (error) {
         next(error);

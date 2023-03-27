@@ -5,7 +5,7 @@ const { isAuthenticated } = require('../middlewares/jwt');
 // @desc    Get one reservation
 // @route   GET /reservations/:reservationId
 // @access  Private
-router.get('/:bookingId',isAuthenticated, async (req, res, next) => {
+router.get(':bookingId',isAuthenticated, async (req, res, next) => {
     const { bookingId } = req.params;
     try {
       const booking = await Booking.findById(bookingId);
@@ -18,7 +18,7 @@ router.get('/:bookingId',isAuthenticated, async (req, res, next) => {
 // @desc    Create one property
 // @route   POST /property
 // @access  Private
-router.post('/', isAuthenticated,async (req, res, next) => {
+router.post('/bookings', isAuthenticated,async (req, res, next) => {
   try {
        const newBooking= await Booking.create(req.body);
        res.status(201).json(newBooking);

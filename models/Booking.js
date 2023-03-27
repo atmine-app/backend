@@ -11,6 +11,9 @@ const BookingSchema = new Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   startDate: { type: String, required: true },
   endDate: { type: String, required: true },
+},
+{
+  timestamps: true
 });
 
 module.exports = model("Booking", BookingSchema);
