@@ -23,7 +23,7 @@ router.get('/:propertyId', async (req, res, next) => {
 router.post('/', isAuthenticated, async (req, res, next) => {
     const userId = req.payload._id;
    try {
-        const newProperty = await Property.create({ ...req.body, user: userId });
+        const newProperty = await Property.create({ ...req.body, owner: userId });
         res.status(201).json(newProperty);
    } catch (error) {
         next(error);

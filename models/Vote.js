@@ -4,7 +4,7 @@ const voteSchema = new Schema(
   {
     property: {
         type: Schema.Types.ObjectId,
-        ref: 'Tool'
+        ref: 'Property'
       },
     user: {
       type: Schema.Types.ObjectId,
