@@ -4,7 +4,7 @@ const { Schema, model } = mongoose;
 const propertySchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-//   owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
   category: {
     type: String,
     enum: [
