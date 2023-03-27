@@ -46,12 +46,8 @@ router.put('/:bookingId', async (req, res, next) => {
 // @access  Private
 router.delete('/:bookingId', async (req, res, next) => {
   const { bookingId } = req.params;
-  console.log('bookingId:', bookingId);
-
   try {
     const deletedBooking = await Booking.findOneAndDelete({ _id: bookingId });
-    console.log('deletedBooking:', deletedBooking);
-
     if (deletedBooking) {
       res.status(200).json(deletedBooking);
     } else {

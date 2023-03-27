@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const Property = require('../models/Property');
+const Vote = require('../models/Vote');
+const { authenticateJWT, isAuthenticated } = require('../middlewares/jwt');
 
 
 // @desc    Get one property
@@ -59,5 +61,46 @@ router.delete('/:propertyId', async (req, res, next) => {
     }
   });
   
+  // @desc    Get all votes
+// @route   GET /votes
+// @access  Public
+router.get('/:propertyId/votes', async (req, res, next) => {
+    const { propertyId } = req.params;
+    try {
+        const votes = await Vote.find({ property: propertyId });
+        res.status(200).json(votes);
+    } catch (error) {
+        next(error);
+    }
+});
+
+// @desc    Create one vote
+// @route   POST /votes
+// @access  Private
+router.post('/:propertyId/vote', isAuthenticated, async (req, res, next) => {
+    const { propertyId } = req.params;
+    const { rating } = req.body;
+    const userId = req.payload.id; // Get the user ID from the JWT payload
+    try {
+      // Find an existing vote by the user
+      let vote = await Vote.findOne({ property: propertyId, user: userId });
+  
+      // If a vote exists, update it; otherwise, create a new vote
+      if (vote) {
+        vote.rating = rating;
+        await Vote.findByIdAndUpdate(propertyId, req.body, { new: true });
+      } else {
+        vote = await Vote.create({ rating, property: propertyId, user: userId });
+      }
+  
+      // Return the updated vote object as the response
+      res.status(201).json(vote);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+  
+
 
   module.exports = router;
