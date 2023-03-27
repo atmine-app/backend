@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const Property = require('../models/Property');
 
 // @desc    get all properties
 // @route   GET /
