@@ -1,10 +1,16 @@
 const router = require('express').Router();
 
-// @desc    Index page for the API
+// @desc    get all properties
 // @route   GET /
 // @access  Public
 router.get('/', async (req, res, next) => {;
-  res.send('This is the REST API home. Add an endpoint to see data at atmmine Backend.')
+ try {
+   const properties = await Property.find();
+   res.status(200).json(properties);
+ }
+  catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;

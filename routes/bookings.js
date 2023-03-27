@@ -26,4 +26,54 @@ router.post('/', async (req, res, next) => {
   }
  });
 
+ // @desc    Edit one booking
+// @route   PUT /bookings/:bookingId
+// @access  Private
+router.put('/:bookingId', async (req, res, next) => {
+  const { bookingId } = req.params;
+  try {
+    const response = await Booking.findByIdAndUpdate(bookingId, req.body, { new: true });
+    console.log(response)
+    res.redirect(`/bookings/${bookingId}`)
+    res.status(204).json({ message: 'OK' });
+  } catch (error) {
+    next(error)
+  }
+});
+
+ // @desc    Delete one course
+// @route   DELETE /courses/:courseId
+// @access  Private
+router.delete('/:bookingId', async (req, res, next) => {
+  const { bookingId } = req.params;
+  console.log('bookingId:', bookingId);
+
+  try {
+    const deletedBooking = await Booking.findOneAndDelete({ _id: bookingId });
+    console.log('deletedBooking:', deletedBooking);
+
+    if (deletedBooking) {
+      res.status(200).json(deletedBooking);
+    } else {
+      res.status(404).json({ message: 'Booking not found' });
+    }
+  } catch (error) {
+    console.log('error:', error);
+    next(error);
+  }
+});
+
+// @desc    get all bookings
+// @route   GET /
+// @access  Private
+
+router.get('/', async (req, res, next) => {;
+  try {
+    const bookings = await Booking.find();
+    res.status(200).json(bookings);
+  }
+  catch (error) {
+    next(error);
+  }
+});
 module.exports = router;
