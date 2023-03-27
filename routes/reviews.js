@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Review = require('../models/Review');
 const { isAuthenticated } = require('../middlewares/jwt');
-const User = require('../models/User');
+
 
 // @desc    Get one review
 // @route   GET /reviews/:reviewId
@@ -22,9 +22,12 @@ router.get('/:reviewId', async (req, res, next) => {
 router.post('/:propertyId',isAuthenticated, async (req, res, next) => {
     const { propertyId } = req.params;
     const userId = req.payload._id;
-    const review = req.body;
+    const review = req.body.review;
+    console.log(review)
+    console.log(propertyId)
+    console.log(userId)
     try {
-        const newReview = await Review.create({review:review, property: propertyId, user: userId});
+        const newReview = await Review.create({review, property: propertyId, user: userId});
         res.status(201).json(newReview);
     } catch (error) {
         next(error);
@@ -38,6 +41,7 @@ router.put('/:reviewId',isAuthenticated, async (req, res, next) => {
     const { reviewId } = req.params;
     try {
         const response = await Review.findByIdAndUpdate(reviewId, req.body, { new: true });
+        console.log(response)
         res.redirect(`/reviews/${reviewId}`)
         res.status(204).json({ message: 'OK' });
     } catch (error) {
