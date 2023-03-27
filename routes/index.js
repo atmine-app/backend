@@ -4,7 +4,7 @@ const router = require('express').Router();
 // @route   GET /
 // @access  Public
 router.get('/', async (req, res, next) => {;
-  res.send('This is the REST API home. Add an endpoint to see data.')
+  res.send('This is the REST API home. Add an endpoint to see data at atmmine Backend.')
 });
 
 module.exports = router;

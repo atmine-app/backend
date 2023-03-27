@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const ReservationSchema = new mongoose.Schema({
   property: {
     type: mongoose.Schema.Types.ObjectId,

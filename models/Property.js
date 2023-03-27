@@ -1,8 +1,9 @@
-const PropertySchema = new mongoose.Schema({
+const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
+
+const propertySchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  reservations: [ReservationSchema],
   category: {
     type: String,
     enum: [
@@ -19,11 +20,11 @@ const PropertySchema = new mongoose.Schema({
   },
   price: { type: Number, required: true },
   size: { type: Number, required: true },
-  images: [{ type: String }],
+  images: {type: String },
   address: { type: String, required: true },
   city: { type: String, required: true },
   country: { type: String, required: true },
   zipCode: { type: String, required: true },
 });
 
-module.exports = mongoose.model("Property", PropertySchema);
+module.exports = model("Property", propertySchema);
