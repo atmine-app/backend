@@ -1,10 +1,11 @@
 const router = require('express').Router();
 const Booking = require('../models/Booking');
+const { isAuthenticated } = require('../middlewares/jwt');
 
 // @desc    Get one reservation
 // @route   GET /reservations/:reservationId
 // @access  Private
-router.get('/:bookingId', async (req, res, next) => {
+router.get('/:bookingId',isAuthenticated, async (req, res, next) => {
     const { bookingId } = req.params;
     try {
       const booking = await Booking.findById(bookingId);
@@ -17,7 +18,7 @@ router.get('/:bookingId', async (req, res, next) => {
 // @desc    Create one property
 // @route   POST /property
 // @access  Private
-router.post('/', async (req, res, next) => {
+router.post('/', isAuthenticated,async (req, res, next) => {
   try {
        const newBooking= await Booking.create(req.body);
        res.status(201).json(newBooking);
@@ -29,7 +30,7 @@ router.post('/', async (req, res, next) => {
  // @desc    Edit one booking
 // @route   PUT /bookings/:bookingId
 // @access  Private
-router.put('/:bookingId', async (req, res, next) => {
+router.put('/:bookingId',isAuthenticated, async (req, res, next) => {
   const { bookingId } = req.params;
   try {
     const response = await Booking.findByIdAndUpdate(bookingId, req.body, { new: true });
@@ -44,7 +45,7 @@ router.put('/:bookingId', async (req, res, next) => {
  // @desc    Delete one course
 // @route   DELETE /courses/:courseId
 // @access  Private
-router.delete('/:bookingId', async (req, res, next) => {
+router.delete('/:bookingId',isAuthenticated, async (req, res, next) => {
   const { bookingId } = req.params;
   try {
     const deletedBooking = await Booking.findOneAndDelete({ _id: bookingId });
@@ -63,7 +64,7 @@ router.delete('/:bookingId', async (req, res, next) => {
 // @route   GET /
 // @access  Private
 
-router.get('/', async (req, res, next) => {;
+router.get('/',isAuthenticated, async (req, res, next) => {;
   try {
     const bookings = await Booking.find();
     res.status(200).json(bookings);

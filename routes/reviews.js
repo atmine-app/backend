@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Review = require('../models/Review');
+const { isAuthenticated } = require('../middlewares/jwt');
 
 // @desc    Get one review
 // @route   GET /reviews/:reviewId
@@ -17,7 +18,7 @@ router.get('/:reviewId', async (req, res, next) => {
 // @desc    Create one review
 // @route   POST /reviews
 // @access  Private
-router.post('/', async (req, res, next) => {
+router.post('/',isAuthenticated, async (req, res, next) => {
     try {
         const newReview = await Review.create(req.body);
         res.status(201).json(newReview);
@@ -29,7 +30,7 @@ router.post('/', async (req, res, next) => {
 // @desc    Edit one review
 // @route   PUT /reviews/:reviewId
 // @access  Private
-router.put('/:reviewId', async (req, res, next) => {
+router.put('/:reviewId',isAuthenticated, async (req, res, next) => {
     const { reviewId } = req.params;
     try {
         const response = await Review.findByIdAndUpdate(reviewId, req.body, { new: true });
@@ -43,7 +44,7 @@ router.put('/:reviewId', async (req, res, next) => {
 // @desc    Delete one review
 // @route   DELETE /reviews/:reviewId
 // @access  Private 
-router.delete('/:reviewId', async (req, res, next) => {
+router.delete('/:reviewId',isAuthenticated,   async (req, res, next) => {
     const { reviewId } = req.params;
     try {
         const deletedReview = await Review.findOneAndDelete({ _id: reviewId });

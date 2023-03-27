@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Property = require('../models/Property');
 const Vote = require('../models/Vote');
-const { authenticateJWT, isAuthenticated } = require('../middlewares/jwt');
+const { isAuthenticated } = require('../middlewares/jwt');
 
 
 // @desc    Get one property
@@ -20,7 +20,7 @@ router.get('/:propertyId', async (req, res, next) => {
 // @desc    Create one property
 // @route   POST /property
 // @access  Private
-router.post('/', async (req, res, next) => {
+router.post('/', isAuthenticated,async (req, res, next) => {
    try {
         const newProperty = await Property.create(req.body);
         res.status(201).json(newProperty);
@@ -32,7 +32,7 @@ router.post('/', async (req, res, next) => {
 // @desc    Edit one property
 // @route   PUT /properties/:propertyId
 // @access  Private
-router.put('/:propertyId', async (req, res, next) => {
+router.put('/:propertyId', isAuthenticated,async (req, res, next) => {
     const { propertyId } = req.params;
     try {
       const response = await Property.findByIdAndUpdate(propertyId, req.body, { new: true });
@@ -47,7 +47,7 @@ router.put('/:propertyId', async (req, res, next) => {
  // @desc    Delete one course
 // @route   DELETE /courses/:courseId
 // @access  Private
-router.delete('/:propertyId', async (req, res, next) => {
+router.delete('/:propertyId',isAuthenticated, async (req, res, next) => {
     const { propertyId } = req.params;
     try {
       const deletedProperty = await Property.findOneAndDelete({ _id: propertyId });
@@ -80,15 +80,15 @@ router.get('/:propertyId/votes', async (req, res, next) => {
 router.post('/:propertyId/vote', isAuthenticated, async (req, res, next) => {
     const { propertyId } = req.params;
     const { rating } = req.body;
-    const userId = req.payload.id; // Get the user ID from the JWT payload
+    const userId = req.payload._id; // Get the user ID from the JWT payload
     try {
       // Find an existing vote by the user
       let vote = await Vote.findOne({ property: propertyId, user: userId });
-  
+        console.log(vote)
       // If a vote exists, update it; otherwise, create a new vote
       if (vote) {
         vote.rating = rating;
-        await Vote.findByIdAndUpdate(propertyId, req.body, { new: true });
+        vote = await vote.save();
       } else {
         vote = await Vote.create({ rating, property: propertyId, user: userId });
       }
