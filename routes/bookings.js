@@ -5,7 +5,7 @@ const { isAuthenticated } = require('../middlewares/jwt');
 // @desc    Get one reservation
 // @route   GET /reservations/:reservationId
 // @access  Private
-router.get(':bookingId',isAuthenticated, async (req, res, next) => {
+router.get('/:bookingId',isAuthenticated, async (req, res, next) => {
     const { bookingId } = req.params;
     try {
       const booking = await Booking.findById(bookingId);
