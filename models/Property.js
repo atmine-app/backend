@@ -27,6 +27,13 @@ const propertySchema = new Schema(
     city: { type: String, required: true },
     country: { type: String, required: true },
     zipCode: { type: String, required: true },
+    coordinates: {
+        type: {
+          lat: { type: Number, required: true },
+          lng: { type: Number, required: true },
+        },
+        required: true,
+      },
   },
   {
     timestamps: true,
