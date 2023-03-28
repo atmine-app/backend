@@ -50,8 +50,4 @@ router.delete('/:favoriteId', isAuthenticated, async (req, res, next) => {
     }
 });
 
-
-
-
-
 module.exports = router;
