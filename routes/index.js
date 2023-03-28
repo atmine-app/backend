@@ -6,7 +6,8 @@ const Property = require('../models/Property');
 // @access  Public
 router.get('/', async (req, res, next) => {;
  try {
-   const properties = await Property.find();
+   const properties = await Property.find().populate("owner");
+   console.log(properties)
    res.status(200).json(properties);
  }
   catch (error) {
