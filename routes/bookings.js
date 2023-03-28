@@ -33,17 +33,24 @@ router.get('/:bookingId',isAuthenticated, async (req, res, next) => {
   }
  }); */
 
-// @desc   Create one booking and process payment
+// @desc    Create one booking and process payment
 // @route   POST /bookings
 // @access  Private
 router.post('/bookings', isAuthenticated, async (req, res, next) => {
   try {
     // Create a new booking
-    const newBooking = await Booking.create(req.body);
+    const { property, renter, owner, startDate, endDate } = req.body;
+    const newBooking = await Booking.create({
+      property,
+      renter,
+      owner,
+      startDate,
+      endDate,
+    });
     
     // Get the total amount to charge for the booking
-    const { pricePerNight, checkInDate, checkOutDate } = newBooking;
-    const daysBooked = (new Date(checkOutDate) - new Date(checkInDate)) / (24 * 60 * 60 * 1000);
+    const { pricePerNight } = newBooking.property;
+    const daysBooked = (new Date(endDate) - new Date(startDate)) / (24 * 60 * 60 * 1000);
     const amount = pricePerNight * daysBooked;
 
     // Create a payment intent on Stripe
