@@ -3,7 +3,6 @@ const Property = require('../models/Property');
 const Vote = require('../models/Vote');
 const { isAuthenticated } = require('../middlewares/jwt');
 
-
 // @desc    Get one property
 // @route   GET /courses/:propertyId
 // @access  Public
