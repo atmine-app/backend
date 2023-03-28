@@ -1,11 +1,6 @@
 const router = require('express').Router();
 const Booking = require('../models/Booking');
 const { isAuthenticated } = require('../middlewares/jwt');
-//Booking + Payment 
-const Payment = require('../models/Payment');
-const axios = require('axios');
-require('dotenv').config();
-
 
 // @desc    Get one reservation
 // @route   GET /booking/:bookinId
@@ -23,7 +18,8 @@ router.get('/:bookingId',isAuthenticated, async (req, res, next) => {
 // @desc    Create one property
 // @route   POST /booking
 // @access  Private
-/* router.post('/bookings', isAuthenticated,async (req, res, next) => {
+router.post('/bookings', isAuthenticated,async (req, res, next) => {
+  console.log('Received a booking request');
   try {
        const newBooking= await Booking.create(req.body);
        console.log(newBooking)
@@ -31,61 +27,7 @@ router.get('/:bookingId',isAuthenticated, async (req, res, next) => {
   } catch (error) {
        next(error);
   }
- }); */
-
-// @desc    Create one booking and process payment
-// @route   POST /bookings
-// @access  Private
-router.post('/bookings', isAuthenticated, async (req, res, next) => {
-  try {
-    // Create a new booking
-    const { property, renter, owner, startDate, endDate } = req.body;
-    const newBooking = await Booking.create({
-      property,
-      renter,
-      owner,
-      startDate,
-      endDate,
-    });
-    
-    // Get the total amount to charge for the booking
-    const { pricePerNight } = newBooking.property;
-    const daysBooked = (new Date(endDate) - new Date(startDate)) / (24 * 60 * 60 * 1000);
-    const amount = pricePerNight * daysBooked;
-
-    // Create a payment intent on Stripe
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-    const paymentIntent = await axios.post('https://api.stripe.com/v1/payment_intents', {
-      amount,
-      currency: 'usd',
-      payment_method_types: ['card'],
-    }, {
-      headers: { Authorization: `Bearer ${stripeSecretKey}` }
-    });
-
-    // Send the payment confirmation request to Stripe
-    const confirmPayment = await axios.post(`https://api.stripe.com/v1/payment_intents/${paymentIntent.data.id}/confirm`, {
-      payment_method: 'pm_card_visa', // replace with the actual payment method ID
-    }, {
-      headers: { Authorization: `Bearer ${stripeSecretKey}` }
-    });
-
-    // Create a new payment document in MongoDB
-    const payment = new Payment({
-      user: req.user.id, // replace with the actual user ID
-      amount,
-      currency: 'usd',
-      paymentIntentId: confirmPayment.data.id,
-      status: confirmPayment.data.status,
-    });
-
-    await payment.save();
-
-    res.status(201).json(newBooking);
-  } catch (error) {
-    next(error);
-  }
-});
+ });
 
  // @desc    Edit one booking
 // @route   PUT /bookings/:bookingId
