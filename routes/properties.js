@@ -25,7 +25,7 @@ router.get('/:propertyId', async (req, res, next) => {
     const { propertyId } = req.params;
     console.log(propertyId)
     try {
-      const property = await Property.findById(propertyId);
+      const property = await Property.findById(propertyId).populate("owner");
       res.status(200).json(property);
     } catch (error) {
       next(error)
