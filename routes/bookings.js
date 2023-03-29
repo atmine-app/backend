@@ -19,7 +19,6 @@ router.get('/:bookingId',isAuthenticated, async (req, res, next) => {
 // @route   POST /booking
 // @access  Private
 router.post('/', isAuthenticated,async (req, res, next) => {
-  console.log("im here")
   try {
        const newBooking= await Booking.create(req.body);
        console.log(newBooking)
