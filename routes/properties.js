@@ -54,7 +54,6 @@ router.put('/:propertyId', isAuthenticated,async (req, res, next) => {
     try {
       const response = await Property.findByIdAndUpdate(propertyId, req.body, { new: true });
       console.log(response)
-      res.redirect(`/properties/${propertyId}`)
       res.status(204).json({ message: 'OK' });
     } catch (error) {
       next(error)
