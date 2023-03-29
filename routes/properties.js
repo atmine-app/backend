@@ -3,11 +3,27 @@ const Property = require('../models/Property');
 const Vote = require('../models/Vote');
 const { isAuthenticated } = require('../middlewares/jwt');
 
+// @desc    get all properties
+// @route   GET /properties
+// @access  Public
+router.get('/', async (req, res, next) => {;
+  try {
+    const properties = await Property.find().populate("owner");
+    console.log(properties)
+    res.status(200).json(properties);
+  }
+   catch (error) {
+     next(error);
+   }
+ });
+ 
+
 // @desc    Get one property
-// @route   GET /courses/:propertyId
+// @route   GET /properties/:propertyId
 // @access  Public
 router.get('/:propertyId', async (req, res, next) => {
     const { propertyId } = req.params;
+    console.log(propertyId)
     try {
       const property = await Property.findById(propertyId);
       res.status(200).json(property);
@@ -45,7 +61,7 @@ router.put('/:propertyId', isAuthenticated,async (req, res, next) => {
   });
 
  // @desc    Delete one course
-// @route   DELETE /courses/:courseId
+// @route   DELETE /properties/:propertyId
 // @access  Private
 router.delete('/:propertyId',isAuthenticated, async (req, res, next) => {
     const { propertyId } = req.params;
@@ -61,8 +77,8 @@ router.delete('/:propertyId',isAuthenticated, async (req, res, next) => {
     }
   });
   
-  // @desc    Get all votes
-// @route   GET /votes
+// @desc    Get all votes
+// @route   GET /properties/:propertyId/votes
 // @access  Public
 router.get('/:propertyId/votes', async (req, res, next) => {
     const { propertyId } = req.params;
@@ -75,7 +91,7 @@ router.get('/:propertyId/votes', async (req, res, next) => {
 });
 
 // @desc    Create one vote
-// @route   POST /votes
+// @route   POST /properties/:propertyId/vote
 // @access  Private
 router.post('/:propertyId/vote', isAuthenticated, async (req, res, next) => {
     const { propertyId } = req.params;
@@ -101,6 +117,4 @@ router.post('/:propertyId/vote', isAuthenticated, async (req, res, next) => {
   });
   
   
-
-
   module.exports = router;
