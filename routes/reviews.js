@@ -19,13 +19,11 @@ router.get('/:reviewId', async (req, res, next) => {
 // @desc    Create one review
 // @route   POST /reviews
 // @access  Private
-router.post('/:propertyId',isAuthenticated, async (req, res, next) => {
-    const { propertyId } = req.params;
+router.post('/',isAuthenticated, async (req, res, next) => {
+    const { propertyId } = req.body;
     const userId = req.payload._id;
     const review = req.body.review;
-    console.log(review)
-    console.log(propertyId)
-    console.log(userId)
+    
     try {
         const newReview = await Review.create({review, property: propertyId, user: userId});
         res.status(201).json(newReview);
