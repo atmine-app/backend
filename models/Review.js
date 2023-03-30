@@ -3,7 +3,7 @@ const { Schema, model } = require('mongoose');
  
 const reviewSchema = new Schema(
   {
-    Property: {
+    property: {
         type: Schema.Types.ObjectId,
         ref: 'Property'
       },
