@@ -1,22 +1,9 @@
 const mongoose = require('mongoose');
 
 const BookingAlertSchema = new mongoose.Schema({
-  propertyId: {
+  bookingId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Property',
-    required: true,
-  },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  bookingStart: {
-    type: Date,
-    required: true,
-  },
-  bookingEnd: {
-    type: Date,
+    ref: 'Booking',
     required: true,
   },
   alertStatus: {
