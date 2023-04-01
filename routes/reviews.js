@@ -3,29 +3,37 @@ const Review = require('../models/Review');
 const { isAuthenticated } = require('../middlewares/jwt');
 
 
-// @desc    Get one review
-// @route   GET /reviews/:reviewId
+// @desc    Get all reviews from one property
+// @route   GET /reviews/:propertyId
 // @access  public
-router.get('/:reviewId', async (req, res, next) => {
-    const { reviewId } = req.params;
+router.get('/:propertyId', async (req, res, next) => {
+    const { propertyId } = req.params;
+    console.log('im inside get reviews backend')
+    console.log(propertyId)
     try {
-        const review = await Review.findById(reviewId);
-        res.status(200).json(review);
+      const reviews = await Review.find({ property: propertyId }).populate('user');
+      console.log(reviews)
+      res.status(200).json(reviews);
     } catch (error) {
-        next(error)
-    } 
-});
+      next(error);
+    }
+  });
+  
 
 // @desc    Create one review
 // @route   POST /reviews
 // @access  Private
 router.post('/',isAuthenticated, async (req, res, next) => {
-    const { propertyId } = req.body;
     const userId = req.payload._id;
     const review = req.body.review;
-    
+    const propertyId = req.body.propertyId;
+    console.log(req.body)
+    console.log(review)
+    console.log(userId)
+    console.log(propertyId)
     try {
         const newReview = await Review.create({review, property: propertyId, user: userId});
+        console.log(newReview)
         res.status(201).json(newReview);
     } catch (error) {
         next(error);
@@ -39,7 +47,6 @@ router.put('/:reviewId',isAuthenticated, async (req, res, next) => {
     const { reviewId } = req.params;
     try {
         const response = await Review.findByIdAndUpdate(reviewId, req.body, { new: true });
-        console.log(response)
         res.redirect(`/reviews/${reviewId}`)
         res.status(204).json({ message: 'OK' });
     } catch (error) {
