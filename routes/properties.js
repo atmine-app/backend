@@ -89,23 +89,35 @@ router.get('/:propertyId/votes', async (req, res, next) => {
     }
 });
 
-// @desc    Create one vote
-// @route   POST /properties/:propertyId/vote
-// @access  Private
 router.post('/:propertyId/vote', isAuthenticated, async (req, res, next) => {
     const { propertyId } = req.params;
-    const { rating } = req.body;
+    const { location, cleanliness, communication, valueForMoney, amenities,averageRating } = req.body;
     const userId = req.payload._id; // Get the user ID from the JWT payload
+  
     try {
       // Find an existing vote by the user
       let vote = await Vote.findOne({ property: propertyId, user: userId });
-        console.log(vote)
+  
       // If a vote exists, update it; otherwise, create a new vote
       if (vote) {
-        vote.rating = rating;
+        vote.location = location;
+        vote.cleanliness = cleanliness;
+        vote.communication = communication;
+        vote.valueForMoney = valueForMoney;
+        vote.amenities = amenities;
+        vote.averageRating= averageRating;
         vote = await vote.save();
       } else {
-        vote = await Vote.create({ rating, property: propertyId, user: userId });
+        vote = await Vote.create({
+          property: propertyId,
+          user: userId,
+          location,
+          cleanliness,
+          communication,
+          valueForMoney,
+          amenities,
+          averageRating
+        });
       }
   
       // Return the updated vote object as the response
@@ -114,6 +126,7 @@ router.post('/:propertyId/vote', isAuthenticated, async (req, res, next) => {
       next(error);
     }
   });
+  
   
   
   module.exports = router;
