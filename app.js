@@ -13,6 +13,7 @@ const bookingRouter = require('./routes/bookings');
 const reviewRouter = require('./routes/reviews');
 const favoriteRouter = require('./routes/favorites');
 const userRouter = require('./routes/user');
+const paymentRouter = require('./routes/payment');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/bookings',bookingRouter )
 app.use('/reviews', reviewRouter);
 app.use('/favorites', favoriteRouter);
 app.use('/user', userRouter);
+app.use(paymentRouter)
 
 
 // catch 404 and forward to error handler
@@ -52,5 +54,10 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
   }
 });
+/* 
+const port = process.env.PORT || 3001;
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
+}); */
 
 module.exports = app;
