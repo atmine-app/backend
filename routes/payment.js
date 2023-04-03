@@ -18,14 +18,14 @@ router.get('*', (req, res) => {
 
 router.post("/api/checkout", async (req, res) => {
   // we can get more data to find in db
-  const { id, amount } = req.body;
+  const { id, amount, property, renter, startDate, endDate } = req.body;
 
   try {
     console.log("Payment Request Received! ", amount)
     const payment = await stripe.paymentIntents.create({
       amount,
       currency: "USD",
-      description: "Gaming Keyboard",
+      description: `Booking for property ${property._id}`, // Update the description with the relevant property ID
       payment_method: id,
       confirm: true, //confirm the payment at the same time
     });
