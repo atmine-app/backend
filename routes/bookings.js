@@ -8,7 +8,14 @@ const { isAuthenticated } = require('../middlewares/jwt');
 router.get('/:bookingId',isAuthenticated, async (req, res, next) => {
     const { bookingId } = req.params;
     try {
-      const booking = await Booking.findById(bookingId);
+      const booking = await Booking.findById(bookingId)
+        .populate("property")
+        .populate("renter")
+        .populate({
+            path: "owner",
+            model: "User"
+        });
+        console.log(booking)
       res.status(200).json(booking);
     } catch (error) {
       next(error)
@@ -121,7 +128,7 @@ router.delete('/:bookingId',isAuthenticated, async (req, res, next) => {
 
 router.get('/',isAuthenticated, async (req, res, next) => {;
   try {
-    const bookings = await Booking.find();
+    const bookings = await Booking.find().populate("property").sort({ createdAt: -1 });
     res.status(200).json(bookings);
   }
   catch (error) {
