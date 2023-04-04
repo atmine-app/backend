@@ -15,6 +15,8 @@ const propertySchema = new Schema(
         "garage",
         "basement",
         "attic",
+        "pool",
+        "barbecue",
         "photostudio",
         "other",
       ],
@@ -28,11 +30,35 @@ const propertySchema = new Schema(
     country: { type: String, required: true },
     zipCode: { type: String, required: true },
     coordinates: {
-        type: {
-          lat: { type: Number, required: true },
-          lng: { type: Number, required: true },
-        },
+      type: {
+        lat: { type: Number, required: true },
+        lng: { type: Number, required: true },
       },
+    },
+    amenities: {
+      type: [
+        {
+          type: String,
+          enum: [
+            "wifi",
+            "music",
+            "tv",
+            "airConditioning",
+            "heating",
+            "washer",
+            "dryer",
+            "dishwasher",
+            "elevator",
+            "petFriendly",
+            "smokingAllowed",
+            "kidFriendly",
+            "eventFriendly",
+            "other",
+          ],
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: true,
