@@ -24,7 +24,7 @@ const propertySchema = new Schema(
     },
     price: { type: Number, required: true },
     size: { type: Number, required: true },
-    images: { type: String },
+    images: [{ type: String }],
     address: { type: String, required: true },
     city: { type: String, required: true },
     country: { type: String, required: true },

@@ -3,20 +3,42 @@ const Property = require('../models/Property');
 const Vote = require('../models/Vote');
 const { isAuthenticated } = require('../middlewares/jwt');
 
+
 // @desc    get all properties
 // @route   GET /properties
 // @access  Public
-router.get('/', async (req, res, next) => {;
-  try {
-    const properties = await Property.find().populate("owner");
-    console.log(properties)
-    res.status(200).json(properties);
-  }
-   catch (error) {
-     next(error);
-   }
- });
- 
+router.get('/', async (req, res, next) => {
+    try {
+      const properties = await Property.find().populate("owner");
+  
+      // Get average ratings for properties
+      const avgRatings = await Vote.aggregate([
+        {
+          $group: {
+            _id: "$property",
+            averageRating: { $avg: "$averageRating" }
+          }
+        }
+      ]);
+  
+      // Create a map of propertyId to averageRating
+      const ratingMap = new Map(
+        avgRatings.map(rating => [rating._id.toString(), rating.averageRating])
+      );
+  
+      // Add averageRating to the properties
+      const propertiesWithRatings = properties.map(property => {
+        const averageRating = ratingMap.get(property._id.toString()) || 0;
+        return { ...property.toObject(), averageRating };
+      });
+  
+      console.log(propertiesWithRatings);
+      res.status(200).json(propertiesWithRatings);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
 
 // @desc    Get one property
 // @route   GET /properties/:propertyId
