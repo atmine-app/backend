@@ -16,6 +16,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    avatar: { 
+      type: String,
+      default: "https://res.cloudinary.com/duw4zfhmh/image/upload/v1680718758/at_mine/Screenshot_2023-04-05_at_20.18.29_zdw1vp.png"
+    },
     name: String,
     lastname: String,
     phoneNumber: String,

@@ -9,6 +9,7 @@ router.get('/me', isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and made available on `req.payload`
   res.status(200).json(req.payload);
+  console.log(req.payload);
 })
 
 // @desc    UPDATE user properties
