@@ -36,9 +36,9 @@ router.post("/api/checkout", async (req, res) => {
     const payment = await stripe.paymentIntents.create({
       amount,
       currency: "USD",
-      description: `Booking for property ${property._id}`, // Update the description with the relevant property ID
+      description: `Booking for property ${property._id}`, 
       payment_method: id,
-      confirm: true, //confirm the payment at the same time
+      confirm: true, 
     });
 
     const message = {
