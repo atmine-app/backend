@@ -314,7 +314,7 @@ router.post("/api/checkout", async (req, res) => {
         <td bgcolor="#605cb8">
         <table width="100%" border="0" cellpadding="0" cellspacing="0">
         <tr>
-        <td height="44" align="center" style="font-size:13px; height:44px; min-height:44px; line-height:20px; text-align:center; font-family: arial, helvetica, sans-serif; text-transform:uppercase;"><a title="B55" href="http://localhost:3000/login" target="_blank" style="color:#60c2a4; text-decoration:none; width:100%; display:block; padding:12px 0;"><span style="display:inline-block; color:#ffffff;">Manage your booking</span></a></td>
+        <td height="44" align="center" style="font-size:13px; height:44px; min-height:44px; line-height:20px; text-align:center; font-family: arial, helvetica, sans-serif; text-transform:uppercase;"><a title="B55" href="http://localhost:3000/bookings" target="_blank" style="color:#60c2a4; text-decoration:none; width:100%; display:block; padding:12px 0;"><span style="display:inline-block; color:#ffffff;">Manage your booking</span></a></td>
         </tr>
         </table>
         </td>
