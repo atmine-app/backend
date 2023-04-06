@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
           }
         }
       ]);
-  
+      console.log("average ratings", avgRatings);
       // Create a map of propertyId to averageRating
       const ratingMap = new Map(
         avgRatings.map(rating => [rating._id.toString(), rating.averageRating])
@@ -28,16 +28,16 @@ router.get('/', async (req, res, next) => {
   
       // Add averageRating to the properties
       const propertiesWithRatings = properties.map(property => {
-        const averageRating = ratingMap.get(property._id.toString()) || 0;
+        const averageRating = parseFloat((ratingMap.get(property._id.toString()) || 0).toFixed(2));
         return { ...property.toObject(), averageRating };
       });
   
-      console.log(propertiesWithRatings);
       res.status(200).json(propertiesWithRatings);
     } catch (error) {
       next(error);
     }
   });
+  
   
 
 // @desc    Get one property
@@ -45,7 +45,6 @@ router.get('/', async (req, res, next) => {
 // @access  Public
 router.get('/:propertyId', async (req, res, next) => {
     const { propertyId } = req.params;
-    console.log(propertyId)
     try {
       const property = await Property.findById(propertyId).populate("owner");
       res.status(200).json(property);
@@ -61,7 +60,6 @@ router.post('/', isAuthenticated, async (req, res, next) => {
     const userId = req.payload._id;
    try {
         const newProperty = await Property.create({ ...req.body, owner: userId });
-        console.log(newProperty)
         res.status(201).json(newProperty);
    } catch (error) {
         next(error);
@@ -111,6 +109,9 @@ router.get('/:propertyId/votes', async (req, res, next) => {
     }
 });
 
+// @desc   Post and update votes
+// @route   POST /propertyId/vote
+// @access  Public
 router.post('/:propertyId/vote', isAuthenticated, async (req, res, next) => {
     const { propertyId } = req.params;
     const { location, cleanliness, communication, valueForMoney, amenities,averageRating } = req.body;
@@ -148,7 +149,19 @@ router.post('/:propertyId/vote', isAuthenticated, async (req, res, next) => {
       next(error);
     }
   });
-  
+
+  // @desc    Get user vote for a specific property
+// @route   GET /properties/:propertyId/votes/:userId
+// @access  Public
+router.get('/:propertyId/votes/:userId', async (req, res, next) => {
+    const { propertyId, userId } = req.params;
+    try {
+        const userVote = await Vote.findOne({ property: propertyId, user: userId });
+        res.status(200).json(userVote);
+    } catch (error) {
+        next(error);
+    }
+});
   
   
   module.exports = router;

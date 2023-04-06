@@ -14,6 +14,7 @@ const reviewRouter = require('./routes/reviews');
 const favoriteRouter = require('./routes/favorites');
 const userRouter = require('./routes/user');
 const paymentRouter = require('./routes/payment');
+const openaiRouter = require("./routes/openai");
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/reviews', reviewRouter);
 app.use('/favorites', favoriteRouter);
 app.use('/user', userRouter);
 app.use(paymentRouter)
+app.use("/openai", openaiRouter);
 
 
 // catch 404 and forward to error handler

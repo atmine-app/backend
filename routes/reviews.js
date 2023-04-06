@@ -18,7 +18,7 @@ router.get("/:propertyId", async (req, res, next) => {
   }
 });
 
-// @desc    Create one review
+// @desc    Create one review by user logged in
 // @route   POST /reviews
 // @access  Private
 router.post("/", isAuthenticated, async (req, res, next) => {
@@ -75,7 +75,8 @@ router.delete("/:reviewId", isAuthenticated, async (req, res, next) => {
 // @access  Public
 router.get("/", async (req, res, next) => {
   try {
-    const reviews = await Review.find();
+    const reviews = await Review.find().populate('user', 'username _id') 
+    .exec();
     res.status(200).json(reviews);
   } catch (error) {
     next(error);
