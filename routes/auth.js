@@ -319,7 +319,7 @@ router.post('/signup', async (req, res, next) => {
         <td bgcolor="#605cb8">
         <table width="100%" border="0" cellpadding="0" cellspacing="0">
         <tr>
-        <td height="44" align="center" style="font-size:13px; height:44px; min-height:44px; line-height:20px; text-align:center; font-family: arial, helvetica, sans-serif; text-transform:uppercase;"><a title="B55" href="http://localhost:3000/login" target="_blank" style="color:#60c2a4; text-decoration:none; width:100%; display:block; padding:12px 0;"><span style="display:inline-block; color:#ffffff;">Start renting</span></a></td>
+        <td height="44" align="center" style="font-size:13px; height:44px; min-height:44px; line-height:20px; text-align:center; font-family: arial, helvetica, sans-serif; text-transform:uppercase;"><a title="B55" href="http://localhost:3000/login" target="_blank" style="color:#60c2a4; text-decoration:none; width:100%; display:block; padding:12px 0;"><span style="display:inline-block; color:#ffffff;">Get Started</span></a></td>
         </tr>
         </table>
         </td>
@@ -551,8 +551,10 @@ router.post('/login', async (req, res, next) => {
           email: userInDB.email,
           username: userInDB.username,
           role: userInDB.role,
+          avatar: userInDB.avatar,
           _id: userInDB._id
         }
+        console.log(payload)
         // Use the jwt middleware to create de token
         const authToken = jwt.sign(
           payload,
