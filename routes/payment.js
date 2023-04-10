@@ -43,13 +43,15 @@ router.post("/api/checkout", async (req, res) => {
       confirm: true, 
     });
 
+    console.log("Maksym pay", payment.id, payment.status, payment.amount)
+
     const bookingConfirmationTemplate = fs.readFileSync(path.join(__dirname, '..', 'emails', 'bookingConfirmation.html'), 'utf-8');
     const html = await ejs.render(bookingConfirmationTemplate, { amount, property, startDate, endDate, renter });
 
     const message = {
       from: `"atmine" <${process.env.TRANSPORTER_EMAIL}>`,
       to: renter.email,
-      subject: `Booking Confirmation for property ${property.title} from ${startDate} to ${endDate}`,
+      subject: `📅 Booking Confirmation for property ${property.title} from ${startDate} to ${endDate}`,
       html: html,
     };
 
@@ -61,7 +63,7 @@ router.post("/api/checkout", async (req, res) => {
       }
     });
 
-    return res.status(200).json({ message: "Successful Payment" });
+    return res.status(200).json({ message: "Successful Payment", transactionId: payment.id });
   } catch (error) {
     console.log(error);
     return res.json({ message: error.raw.message });

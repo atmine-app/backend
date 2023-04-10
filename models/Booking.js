@@ -13,8 +13,7 @@ const BookingSchema = new Schema({
   startDate: { type: String, required: true },
   endDate: { type: String, required: true },
   status: { type: String, enum: ["pending", "accepted", "rejected"], default: "pending" },
-  transactionId: { type: String, required() { return this.status === "accepted" } },
-  //total: { type: Number, required() { return this.status === "accepted" } },
+  transactionId: { type: String, required: true },
 },
 {
   timestamps: true
