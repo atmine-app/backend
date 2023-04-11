@@ -36,18 +36,17 @@ router.post('/', isAuthenticated,async (req, res, next) => {
  }); 
 
 
- // @desc    Edit one booking
+// @desc    Edit one booking
 // @route   PUT /bookings/:bookingId
 // @access  Private
-router.put('/:bookingId',isAuthenticated, async (req, res, next) => {
+router.put('/:bookingId', isAuthenticated, async (req, res, next) => {
   const { bookingId } = req.params;
   try {
     const response = await Booking.findByIdAndUpdate(bookingId, req.body, { new: true });
-    console.log(response)
-    res.redirect(`/bookings/${bookingId}`)
+    console.log(response);
     res.status(204).json({ message: 'OK' });
   } catch (error) {
-    next(error)
+    next(error);
   }
 });
 
