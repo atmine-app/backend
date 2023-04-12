@@ -17,6 +17,49 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+function formatDate(date) {
+  const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+  return new Date(date).toLocaleDateString('en-GB', options);
+}
+
+async function sendConfirmationEmail(booking) {
+  const { amount, property, renter, startDate, endDate } = booking;
+
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const bookingConfirmationTemplate = fs.readFileSync(path.join(__dirname, '..', 'emails', 'bookingConfirmation.html'), 'utf-8');
+  const html = await ejs.render(bookingConfirmationTemplate, { amount, property, startDate: formattedStartDate, endDate: formattedEndDate, renter, bookingId: booking._id });
+
+  const message = {
+    from: `"atmine" <${process.env.TRANSPORTER_EMAIL}>`,
+    to: renter.email,
+    subject: `📅 Booking Confirmation for property ${property.title} from ${formattedStartDate} to ${formattedEndDate}`,
+    html: html,
+  };
+
+  return transporter.sendMail(message);
+}
+
+async function sendCancellationEmail(booking) {
+  const { property, renter, startDate, endDate } = booking;
+
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const bookingCancellationTemplate = fs.readFileSync(path.join(__dirname, '..', 'emails', 'bookingCancellation.html'), 'utf-8');
+  const html = await ejs.render(bookingCancellationTemplate, { property, startDate: formattedStartDate, endDate: formattedEndDate, renter, bookingId: booking._id });
+
+  const message = {
+    from: `"atmine" <${process.env.TRANSPORTER_EMAIL}>`,
+    to: renter.email,
+    subject: `🚫 Booking Cancellation for property ${property.title} from ${formattedStartDate} to ${formattedEndDate}`,
+    html: html,
+  };
+
+  return transporter.sendMail(message);
+}
+
 // @desc    Get one reservation
 // @route   GET /booking/:bookinId
 // @access  Private
@@ -48,26 +91,15 @@ router.post('/', isAuthenticated, async (req, res, next) => {
       .populate('property')
       .populate('renter');
 
-    // Add the email sending logic here
-    const { amount, property, renter, startDate, endDate } = populatedBooking;
-
-    const bookingConfirmationTemplate = fs.readFileSync(path.join(__dirname, '..', 'emails', 'bookingConfirmation.html'), 'utf-8');
-    const html = await ejs.render(bookingConfirmationTemplate, { amount, property, startDate, endDate, renter, bookingId: newBooking._id });
-
-    const message = {
-      from: `"atmine" <${process.env.TRANSPORTER_EMAIL}>`,
-      to: renter.email,
-      subject: `📅 Booking Confirmation for property ${property.title} from ${startDate} to ${endDate}`,
-      html: html,
-    };
-
-await transporter.sendMail(message).then(info => {
-  console.log(`Email sent: ${info.response}`);
-  res.status(201).json(newBooking);
-}).catch(error => {
-  console.error('Email sending failed:', error);
-  res.status(500).json({ message: 'Email sending failed', error });
-});
+    await sendConfirmationEmail(populatedBooking)
+      .then(info => {
+        console.log(`Email sent: ${info.response}`);
+        res.status(201).json(newBooking);
+      })
+      .catch(error => {
+        console.error('Email sending failed:', error);
+        res.status(500).json({ message: 'Email sending failed', error });
+      });
 
   } catch (error) {
     next(error);
@@ -80,8 +112,25 @@ await transporter.sendMail(message).then(info => {
 router.put('/:bookingId', isAuthenticated, async (req, res, next) => {
   const { bookingId } = req.params;
   try {
-    const response = await Booking.findByIdAndUpdate(bookingId, req.body, { new: true });
-    res.status(204).json({ message: 'OK' });
+    const oldBooking = await Booking.findById(bookingId)
+      .populate("property")
+      .populate("renter");
+
+    if (!oldBooking) {
+      res.status(404).json({ message: 'Booking not found' });
+      return;
+    }
+
+    const updatedBooking = await Booking.findByIdAndUpdate(bookingId, req.body, { new: true })
+      .populate("property")
+      .populate("renter");
+
+    // If booking status has been updated to "cancelled", send cancellation email
+    if (oldBooking.status !== "cancelled" && updatedBooking.status === "cancelled") {
+      await sendCancellationEmail(updatedBooking);
+    }
+
+    res.status(200).json(updatedBooking);
   } catch (error) {
     next(error);
   }
