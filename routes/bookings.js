@@ -60,6 +60,25 @@ async function sendCancellationEmail(booking) {
   return transporter.sendMail(message);
 }
 
+async function sendBookingCompletedEmail(booking) {
+  const { property, renter, startDate, endDate } = booking;
+
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  const bookingCompletedTemplate = fs.readFileSync(path.join(__dirname, '..', 'emails', 'bookingCompleted.html'), 'utf-8');
+  const html = await ejs.render(bookingCompletedTemplate, { property, startDate: formattedStartDate, endDate: formattedEndDate, renter, bookingId: booking._id });
+
+  const message = {
+    from: `"atmine" <${process.env.TRANSPORTER_EMAIL}>`,
+    to: renter.email,
+    subject: `🎉 Review Your Recent Booking: Share your ${property.title} experience`,
+    html: html,
+  };
+
+  return transporter.sendMail(message);
+}
+
 // @desc    Get one reservation
 // @route   GET /booking/:bookinId
 // @access  Private
@@ -128,6 +147,14 @@ router.put('/:bookingId', isAuthenticated, async (req, res, next) => {
     // If booking status has been updated to "cancelled", send cancellation email
     if (oldBooking.status !== "cancelled" && updatedBooking.status === "cancelled") {
       await sendCancellationEmail(updatedBooking);
+    }
+
+    // If booking status has been updated to "completed", send booking completed email after 2 days
+    if (oldBooking.status !== "completed" && updatedBooking.status === "completed") {
+      const twoDays = 2 * 24 * 60 * 60 * 1000;
+      setTimeout(async () => {
+        await sendBookingCompletedEmail(updatedBooking);
+      }, twoDays);
     }
 
     res.status(200).json(updatedBooking);
