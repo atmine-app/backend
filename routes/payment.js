@@ -43,7 +43,7 @@ router.post("/api/checkout", async (req, res) => {
       confirm: true, 
     });
 
-    console.log("Maksym pay", payment.id, payment.status, payment.amount)
+    console.log("Payment details:", payment.id, payment.status, payment.amount)
 
     const bookingConfirmationTemplate = fs.readFileSync(path.join(__dirname, '..', 'emails', 'bookingConfirmation.html'), 'utf-8');
     const html = await ejs.render(bookingConfirmationTemplate, { amount, property, startDate, endDate, renter });
