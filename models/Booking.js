@@ -19,6 +19,8 @@ const BookingSchema = new Schema(
       ref: "User",
       required: true,
     },
+    serviceFee: { type: Number, required: true},
+    bookingPrice: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
     startDate: { type: String, required: true },
     endDate: { type: String, required: true },
