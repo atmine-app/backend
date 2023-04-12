@@ -1,12 +1,12 @@
+require('dotenv').config();
+
 const express = require("express");
 const cors = require("cors");
 const Stripe = require("stripe");
-const stripe = new Stripe("sk_test_51MmyyDKnGwuMyNJVGYOxw1p1r4VzAouPnvaaBw7bclkPUDWrhlgKlAnf0oATwx77Wc4UT9VMCQKhxHsexWcTv4bG00L3tRbrvV");
+const stripe = new Stripe(process.env.STRIPE_SECRET_TEST);
+
 const path = require('path');
 const router = express.Router();
-const nodemailer = require('nodemailer');
-const ejs = require('ejs');
-const fs = require('fs');
 
 router.use(cors({ origin: "http://localhost:3000" }));
 router.use(express.json());
@@ -17,16 +17,6 @@ router.use(express.static(path.join(__dirname, 'build')));
 // Catch-all route
 router.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.TRANSPORTER_EMAIL,
-    pass: process.env.TRANSPORTER_PASSWORD,
-  }
 });
 
 router.post("/api/checkout", async (req, res) => {
@@ -45,23 +35,7 @@ router.post("/api/checkout", async (req, res) => {
 
     console.log("Payment details:", payment.id, payment.status, payment.amount)
 
-    const bookingConfirmationTemplate = fs.readFileSync(path.join(__dirname, '..', 'emails', 'bookingConfirmation.html'), 'utf-8');
-    const html = await ejs.render(bookingConfirmationTemplate, { amount, property, startDate, endDate, renter });
-
-    const message = {
-      from: `"atmine" <${process.env.TRANSPORTER_EMAIL}>`,
-      to: renter.email,
-      subject: `📅 Booking Confirmation for property ${property.title} from ${startDate} to ${endDate}`,
-      html: html,
-    };
-
-    transporter.sendMail(message, (error, info) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log(`Email sent: ${info.response}`);
-      }
-    });
+    // Remove the email sending logic from here
 
     return res.status(200).json({ message: "Successful Payment", transactionId: payment.id });
   } catch (error) {
