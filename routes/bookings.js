@@ -191,6 +191,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   try {
     const bookings = await Booking.find()
       .populate("property")
+      .populate("renter")
       .sort({ createdAt: -1 });
     res.status(200).json(bookings);
   } catch (error) {
