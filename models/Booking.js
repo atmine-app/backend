@@ -48,7 +48,7 @@ BookingSchema.statics.updateCompletedBookings = async function () {
   const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000); // Calculate yesterday's date
   const bookings = await this.find({
     endDate: { $lt: yesterday },
-    status: { $ne: "completed" },
+    status: "confirmed",
   });
   bookings.forEach(async (booking) => {
     booking.status = "completed";
@@ -60,8 +60,12 @@ const Booking = model("Booking", BookingSchema);
 
 // Schedule the updateCompletedBookings function to run at 00.01 every day
 cron.schedule("1 0 * * *", () => {
-  console.log("Running updateCompletedBookings...");
-  Booking.updateCompletedBookings();
+  try {
+    console.log("Running updateCompletedBookings...");
+    Booking.updateCompletedBookings();
+  } catch (err) {
+    console.error("Error running updateCompletedBookings:", err);
+  }
 });
 
 module.exports = Booking;
