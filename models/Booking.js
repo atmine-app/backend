@@ -109,7 +109,7 @@ BookingSchema.statics.sendBookingCompletedEmail = async function (booking) {
     html: html,
   };
 
-  console.log(`Sending email to ${populatedRenter.email}...`);
+  console.log(`Email to ${populatedRenter.email}...`);
   return transporter.sendMail(message);
 };
 
@@ -117,7 +117,7 @@ const Booking = model("Booking", BookingSchema);
 
 
 // Schedule the updateCompletedBookings function to run at 10.00am next day after completed
-cron.schedule("05 8 * * *", () => {
+cron.schedule("13 8 * * *", () => {
   try {
     console.log("Running updateCompletedBookings...");
     Booking.updateCompletedBookings();
