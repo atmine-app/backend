@@ -117,7 +117,7 @@ const Booking = model("Booking", BookingSchema);
 
 
 // Schedule the updateCompletedBookings function to run at 10.00am next day after completed
-cron.schedule("13 8 * * *", () => {
+cron.schedule("0 9 * * *", () => {
   try {
     console.log("Running updateCompletedBookings...");
     Booking.updateCompletedBookings();
