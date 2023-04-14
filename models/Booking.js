@@ -74,7 +74,12 @@ BookingSchema.statics.sendBookingCompletedEmail = async function (booking) {
     },
   });
 
-  const { property, renter, startDate, endDate } = booking;
+  // Populate the `renter` and `property` fields
+  const populatedBooking = await Booking.findById(booking._id).populate("renter").populate("property");
+  const populatedRenter = populatedBooking.renter;
+  const populatedProperty = populatedBooking.property;
+
+  const { startDate, endDate } = booking;
 
   function formatDate(date) {
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
@@ -84,39 +89,35 @@ BookingSchema.statics.sendBookingCompletedEmail = async function (booking) {
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
 
-  // Populate the `property` object
-  const populatedBooking = await Booking.findById(booking._id).populate("property");
-  const populatedProperty = populatedBooking.property;
-
   const bookingCompletedTemplate = fs.readFileSync(
     path.join(__dirname, "..", "emails", "bookingCompleted.html"),
     "utf-8"
   );
 
   const html = await ejs.render(bookingCompletedTemplate, {
-    property: populatedProperty, // Pass the populated `property` object to the template
+    property: populatedProperty,
     startDate: formattedStartDate,
     endDate: formattedEndDate,
-    renter,
+    renter: populatedRenter,
     bookingId: booking._id,
   });
 
   const message = {
     from: `"atmine" <${process.env.TRANSPORTER_EMAIL}>`,
-    to: booking.renter.email,
+    to: populatedRenter.email,
     subject: `🎉 Review Your Recent Booking: Share your ${populatedProperty.title} experience`,
     html: html,
   };
 
-  console.log(`Sending email to ${booking.renter.email}...`);
-return transporter.sendMail(message);
+  console.log(`Sending email to ${populatedRenter.email}...`);
+  return transporter.sendMail(message);
 };
 
 const Booking = model("Booking", BookingSchema);
 
 
 // Schedule the updateCompletedBookings function to run at 10.00am next day after completed
-cron.schedule("0 10 * * *", () => {
+cron.schedule("05 8 * * *", () => {
   try {
     console.log("Running updateCompletedBookings...");
     Booking.updateCompletedBookings();
