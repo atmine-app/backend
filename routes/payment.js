@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_TEST);
 const path = require('path');
 const router = express.Router();
 
-router.use(cors({ origin: process.env.ORIGIN }));
+router.use(cors({ origin: [process.env.ORIGIN, 'https://atmine-app.netlify.app'] }));
 router.use(express.json());
 
 // Serve static files
