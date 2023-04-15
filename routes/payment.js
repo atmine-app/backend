@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_TEST);
 const path = require('path');
 const router = express.Router();
 
-router.use(cors({ origin: "http://localhost:3000" }));
+router.use(cors({ origin: process.env.ORIGIN }));
 router.use(express.json());
 
 // Serve static files
