@@ -106,6 +106,7 @@ router.post('/login', async (req, res, next) => {
           username: userInDB.username,
           role: userInDB.role,
           avatar: userInDB.avatar,
+          status: userInDB.status,
           _id: userInDB._id
         }
         console.log(payload)
