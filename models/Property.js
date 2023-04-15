@@ -60,6 +60,7 @@ const propertySchema = new Schema(
       ],
       default: [],
     },
+    active: { type: Boolean, default: true },
   },
   {
     timestamps: true,
