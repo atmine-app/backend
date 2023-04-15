@@ -4,44 +4,80 @@ const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const { isAuthenticated, isAdmin } = require('../middlewares/jwt');
 const saltRounds = 10;
+const nodemailer = require('nodemailer');
+const ejs = require('ejs');
+const fs = require('fs');
 
-// @desc    SIGN UP new user
-// @route   POST /api/v1/auth/signup
-// @access  Public
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.TRANSPORTER_EMAIL,
+    pass: process.env.TRANSPORTER_PASSWORD,
+  }
+});
+
 router.post('/signup', async (req, res, next) => {
   const { email, password, username } = req.body;
-  // Check if email or password or name are provided as empty string 
+
   if (email === "" || password === "" || username === "") {
     res.status(400).json({ message: 'Please fill all the fields to register' });
     return;
   }
-  // Use regex to validate the email format
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!emailRegex.test(email)) {
     res.status(400).json({ message: 'Not a valid email format' });
     return;
   }
-   // Use regex to validate the password format
+
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
   if (!passwordRegex.test(password)) {
     res.status(400).json({ message: 'Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter' });
     return;
   }
+
   try {
     const userInDB = await User.findOne({ email });
     if (userInDB) {
-      res.status(400).json({ message: `User already exists with email ${email}` })
+      res.status(400).json({ message: `User already exists with email ${email}` });
       return;
     } else {
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
       const newUser = await User.create({ email, hashedPassword, username });
+
+      fs.readFile('emails/signup.html', 'utf8', (err, html) => {
+        if (err) {
+          throw err;
+        }
+
+        const renderedHtml = ejs.render(html, { username: username, email: email });
+
+        const mailOptions = {
+          from: `"atmine" <${process.env.TRANSPORTER_EMAIL}>`,
+          to: email,
+          subject: "👋 Welcome to atmine!",
+          html: renderedHtml,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error(error);
+          } else {
+            console.log(`Email sent: ${info.response}`);
+          }
+        });
+      });
+
       res.status(201).json({ data: newUser });
     }
   } catch (error) {
     next(error);
   }
 });
+
 
 // @desc    LOG IN user
 // @route   POST /api/v1/auth/login
@@ -69,8 +105,11 @@ router.post('/login', async (req, res, next) => {
           email: userInDB.email,
           username: userInDB.username,
           role: userInDB.role,
+          avatar: userInDB.avatar,
+          status: userInDB.status,
           _id: userInDB._id
         }
+        console.log(payload)
         // Use the jwt middleware to create de token
         const authToken = jwt.sign(
           payload,
