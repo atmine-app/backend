@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "seed": "node ./seed",
+    "seedVotes": "node ./seed/votes",
+    "seedBookings": "node ./seed/bookings",
     "dev": "nodemon ./bin/www",
     "start": "node ./bin/www"
   },
