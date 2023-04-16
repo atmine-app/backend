@@ -19,7 +19,7 @@ const openaiRouter = require("./routes/openai");
 const app = express();
 
 // cookies and loggers
-app.use(cors({ origin: [process.env.ORIGIN, 'https://atmine-app.netlify.dev'] }));
+app.use(cors({ origin: process.env.ORIGIN }));
 app.set('trust proxy', 1);
 
 app.use(logger('dev'));
