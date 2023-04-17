@@ -49,4 +49,20 @@ router.put('/deactivate', isAuthenticated, async (req, res, next) => {
   }
 });
 
+// @desc    GET other user details
+// @route   GET /api/chat/:otherUserId
+// @access  Private
+router.get('/chat/:otherUserId', isAuthenticated, async (req, res, next) => {
+  try {
+    const otherUser = await User.findById(req.params.otherUserId);
+    if (!otherUser) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      res.status(200).json({ data: otherUser });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

@@ -199,4 +199,30 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   }
 });
 
+// @desc    post blocking date
+// @route   /block
+// @access  Private
+
+router.post("/block", async (req, res) => {
+  try {
+    const { property, startDate, endDate } = req.body;
+    const parsedStartDate = parseISO(startDate);
+    const parsedEndDate = parseISO(endDate);
+    const formattedStartDate = format(parsedStartDate, "yyyy-MM-dd");
+    const formattedEndDate = format(parsedEndDate, "yyyy-MM-dd");
+
+    const bookingData = {
+      property: property,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+      status: "blocked",
+    };
+    const booking = await Booking.create(bookingData);
+    res.status(201).json(booking);
+  } catch (error) {
+    console.error("Error in block route:", error);
+    res.status(500).json({ message: "Error blocking date range", error });
+  }
+});
+
 module.exports = router;
