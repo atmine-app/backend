@@ -24,8 +24,6 @@ function formatDate(date) {
 
 async function sendConfirmationEmail(booking) {
   const { amount, property, renter, startDate, endDate } = booking;
-  console.log(renter)
-  console.log(renter.email)
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
 
@@ -54,9 +52,6 @@ async function sendConfirmationEmail(booking) {
 
 async function sendCancellationEmail(booking) {
   const { property, renter, startDate, endDate } = booking;
-  console.log(renter)
-  console.log(renter.email)
-
   const formattedStartDate = formatDate(startDate);
   const formattedEndDate = formatDate(endDate);
 
@@ -124,8 +119,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       .populate("renter");
 
     await sendConfirmationEmail(populatedBooking)
-      .then((info) => {
-        console.log(`Email sent: ${info.response}`);
+      .then(() => {
         res.status(201).json(newBooking);
       })
       .catch((error) => {
@@ -144,8 +138,6 @@ router.put("/:bookingId", isAuthenticated, async (req, res, next) => {
   const { bookingId } = req.params;
   try {
     const oldBooking = await populateBooking(bookingId); 
-    console.log(oldBooking)
-    console.log(bookingId)
 
     if (!oldBooking) {
       res.status(404).json({ message: "Booking not found" });
@@ -187,7 +179,6 @@ router.delete("/:bookingId", isAuthenticated, async (req, res, next) => {
       res.status(404).json({ message: "Booking not found" });
     }
   } catch (error) {
-    console.log("error:", error);
     next(error);
   }
 });

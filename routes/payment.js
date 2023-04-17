@@ -20,26 +20,19 @@ router.get('*', (req, res) => {
 });
 
 router.post("/api/checkout", async (req, res) => {
-  // we can get more data to find in db
   const { id, amount, property, renter, startDate, endDate } = req.body;
 
   try {
-    console.log("Payment Request Received! ", amount, id)
     const payment = await stripe.paymentIntents.create({
       amount,
-      currency: "USD",
+      currency: "EUR",
       description: `Booking for property ${property._id}`, 
       payment_method: id,
       confirm: true, 
     });
 
-    console.log("Payment details:", payment.id, payment.status, payment.amount)
-
-    // Remove the email sending logic from here
-
     return res.status(200).json({ message: "Successful Payment", transactionId: payment.id });
   } catch (error) {
-    console.log(error);
     return res.json({ message: error.raw.message });
   }
 });
