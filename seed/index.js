@@ -653,7 +653,7 @@ mongoose
     return Property.insertMany(propertiesToSeed);
   })
   .then(() => {
-    console.log("Seed done 🌱");
+    console.log("Property seed done 🌱");
   })
   .catch((e) => console.log(e))
   .finally(() => {

@@ -62,12 +62,10 @@ router.post('/signup', async (req, res, next) => {
           html: renderedHtml,
         };
 
-        transporter.sendMail(mailOptions, (error, info) => {
+        transporter.sendMail(mailOptions, (error) => {
           if (error) {
             console.error(error);
-          } else {
-            console.log(`Email sent: ${info.response}`);
-          }
+          } 
         });
       });
 
@@ -83,7 +81,6 @@ router.post('/signup', async (req, res, next) => {
 // @route   POST /api/v1/auth/login
 // @access  Public
 router.post('/login', async (req, res, next) => { 
-  console.log(req.headers);
   const { email, password } = req.body;
   // Check if email or password are provided as empty string 
   if (email === "" || password === "") {
@@ -109,7 +106,6 @@ router.post('/login', async (req, res, next) => {
           status: userInDB.status,
           _id: userInDB._id
         }
-        console.log(payload)
         // Use the jwt middleware to create de token
         const authToken = jwt.sign(
           payload,
@@ -133,7 +129,6 @@ router.post('/login', async (req, res, next) => {
 router.get('/me', isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and made available on `req.payload`
-  console.log('Whose token is on the request:', req.payload);
   // Send back the object with user data
   // previously set as the token payload
   res.status(200).json(req.payload);

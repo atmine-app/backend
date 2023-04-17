@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
           }
         }
       ]);
-      console.log("average ratings", avgRatings);
+      
       // Create a map of propertyId to averageRating
       const ratingMap = new Map(
         avgRatings.map(rating => [rating._id.toString(), rating.averageRating])
