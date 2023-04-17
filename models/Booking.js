@@ -36,6 +36,7 @@ const BookingSchema = new Schema(
         "rejected",
         "cancelled",
         "completed",
+        "blocked"
       ],
       default: "confirmed",
     },
