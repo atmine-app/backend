@@ -31,7 +31,6 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       property: propertyId,
       user: userId,
     });
-    console.log(newReview);
     res.status(201).json(newReview);
   } catch (error) {
     next(error);
