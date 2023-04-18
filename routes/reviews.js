@@ -4,7 +4,7 @@ const { isAuthenticated } = require("../middlewares/jwt");
 
 // @desc    Get all reviews from one property
 // @route   GET /reviews/:propertyId
-// @access  public
+// @access  Public
 router.get("/:propertyId", async (req, res, next) => {
   const { propertyId } = req.params;
 
@@ -74,8 +74,7 @@ router.delete("/:reviewId", isAuthenticated, async (req, res, next) => {
 // @access  Public
 router.get("/", async (req, res, next) => {
   try {
-    const reviews = await Review.find().populate('user', 'username _id') 
-    .exec();
+    const reviews = await Review.find().populate("user", "username _id").exec();
     res.status(200).json(reviews);
   } catch (error) {
     next(error);

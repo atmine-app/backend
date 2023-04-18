@@ -1,48 +1,48 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model } = require("mongoose");
 
 const voteSchema = new Schema(
   {
     property: {
       type: Schema.Types.ObjectId,
-      ref: 'Property'
+      ref: "Property",
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User'
+      ref: "User",
     },
     location: {
       type: Number,
-      required: [true, 'Please rate the location'],
+      required: [true, "Please rate the location"],
       default: 5,
     },
     cleanliness: {
       type: Number,
-      required: [true, 'Please rate the cleanliness'],
+      required: [true, "Please rate the cleanliness"],
       default: 5,
     },
     communication: {
       type: Number,
-      required: [true, 'Please rate the communication'],
+      required: [true, "Please rate the communication"],
       default: 5,
     },
     valueForMoney: {
       type: Number,
-      required: [true, 'Please rate the value for money'],
+      required: [true, "Please rate the value for money"],
       default: 5,
     },
     amenities: {
       type: Number,
-      required: [true, 'Please rate the amenities'],
+      required: [true, "Please rate the amenities"],
       default: 5,
     },
     averageRating: {
-        type: Number,
+      type: Number,
     },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-const Vote = model('Vote', voteSchema);
+const Vote = model("Vote", voteSchema);
 module.exports = Vote;

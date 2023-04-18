@@ -660,5 +660,3 @@ mongoose
     console.log("Closing connection");
     mongoose.connection.close();
   });
-
-// Run npm run seed

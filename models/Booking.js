@@ -23,7 +23,7 @@ const BookingSchema = new Schema(
       ref: "User",
       required: true,
     },
-    serviceFee: { type: Number, required: true},
+    serviceFee: { type: Number, required: true },
     bookingPrice: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
     startDate: { type: String, required: true },
@@ -36,7 +36,7 @@ const BookingSchema = new Schema(
         "rejected",
         "cancelled",
         "completed",
-        "blocked"
+        "blocked",
       ],
       default: "confirmed",
     },
@@ -54,8 +54,10 @@ BookingSchema.statics.updateCompletedBookings = async function () {
   const bookings = await this.find({
     endDate: { $lt: yesterday },
     status: "confirmed",
-  }).populate("property").populate("renter");
-  
+  })
+    .populate("property")
+    .populate("renter");
+
   bookings.forEach(async (booking) => {
     booking.status = "completed";
     await booking.save();
@@ -76,7 +78,9 @@ BookingSchema.statics.sendBookingCompletedEmail = async function (booking) {
   });
 
   // Populate the `renter` and `property` fields
-  const populatedBooking = await Booking.findById(booking._id).populate("renter").populate("property");
+  const populatedBooking = await Booking.findById(booking._id)
+    .populate("renter")
+    .populate("property");
   const populatedRenter = populatedBooking.renter;
   const populatedProperty = populatedBooking.property;
 
@@ -114,7 +118,6 @@ BookingSchema.statics.sendBookingCompletedEmail = async function (booking) {
 };
 
 const Booking = model("Booking", BookingSchema);
-
 
 // Schedule the updateCompletedBookings function to run at 10.00am next day after completed
 cron.schedule("0 9 * * *", () => {
