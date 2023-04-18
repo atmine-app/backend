@@ -1,27 +1,31 @@
-const router = require('express').Router();
-const User = require('../models/User');
-const { isAuthenticated } = require('../middlewares/jwt');
+const router = require("express").Router();
+const User = require("../models/User");
+const { isAuthenticated } = require("../middlewares/jwt");
 
 // @desc    GET logged-in user details
 // @route   GET /api/v1/users/me
 // @access  Private
-router.get('/me', isAuthenticated, (req, res, next) => {
+router.get("/me", isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and made available on `req.payload`
   res.status(200).json(req.payload);
-})
+});
 
 // @desc    UPDATE user properties
 // @route   PUT /api/v1/users
 // @access  Private
-router.put('/edit', isAuthenticated, async (req, res, next) => {
+router.put("/edit", isAuthenticated, async (req, res, next) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.payload._id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.payload._id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     if (!updatedUser) {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: "User not found" });
     } else {
       res.status(200).json({ data: updatedUser });
     }
@@ -33,14 +37,18 @@ router.put('/edit', isAuthenticated, async (req, res, next) => {
 // @desc    Update user status to inactive
 // @route   PUT /api/v1/users/deactivate
 // @access  Private
-router.put('/deactivate', isAuthenticated, async (req, res, next) => {
+router.put("/deactivate", isAuthenticated, async (req, res, next) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.payload._id, { status: 'inactive' }, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.payload._id,
+      { status: "inactive" },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     if (!updatedUser) {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: "User not found" });
     } else {
       res.status(200).json({ data: updatedUser });
     }
@@ -52,11 +60,11 @@ router.put('/deactivate', isAuthenticated, async (req, res, next) => {
 // @desc    GET other user details
 // @route   GET /api/chat/:otherUserId
 // @access  Private
-router.get('/chat/:otherUserId', isAuthenticated, async (req, res, next) => {
+router.get("/chat/:otherUserId", isAuthenticated, async (req, res, next) => {
   try {
     const otherUser = await User.findById(req.params.otherUserId);
     if (!otherUser) {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: "User not found" });
     } else {
       res.status(200).json({ data: otherUser });
     }

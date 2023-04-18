@@ -69,7 +69,7 @@ async function sendCancellationEmail(booking) {
 
   const message = {
     from: `"atmine" <${process.env.TRANSPORTER_EMAIL}>`,
-    to: renter.email, 
+    to: renter.email,
     subject: `🚫 Booking Cancellation for property ${property.title} from ${formattedStartDate} to ${formattedEndDate}`,
     html: html,
   };
@@ -83,7 +83,7 @@ async function populateBooking(bookingId) {
   return Booking.findById(bookingId).populate("property").populate({
     path: "renter",
     model: "User",
-    select: "email"
+    select: "email",
   });
 }
 
@@ -137,7 +137,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
 router.put("/:bookingId", isAuthenticated, async (req, res, next) => {
   const { bookingId } = req.params;
   try {
-    const oldBooking = await populateBooking(bookingId); 
+    const oldBooking = await populateBooking(bookingId);
 
     if (!oldBooking) {
       res.status(404).json({ message: "Booking not found" });
@@ -148,7 +148,9 @@ router.put("/:bookingId", isAuthenticated, async (req, res, next) => {
       bookingId,
       req.body,
       { new: true }
-    ).populate("property").populate("renter");
+    )
+      .populate("property")
+      .populate("renter");
 
     // If booking status has been updated to "cancelled", send cancellation email
     if (

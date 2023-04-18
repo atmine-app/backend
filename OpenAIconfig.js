@@ -4,7 +4,9 @@ async function summarizeText(text) {
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    throw new Error("OpenAI API key not configured, please follow instructions in README.md");
+    throw new Error(
+      "OpenAI API key not configured, please follow instructions in README.md"
+    );
   }
 
   const prompt = generatePromptSummary(text);
@@ -21,7 +23,7 @@ async function summarizeText(text) {
       {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
         },
       }
     );
@@ -31,7 +33,11 @@ async function summarizeText(text) {
     console.error("OpenAI API Error:", error.message);
 
     if (error.response) {
-      console.error("OpenAI API Response:", error.response.status, error.response.data);
+      console.error(
+        "OpenAI API Response:",
+        error.response.status,
+        error.response.data
+      );
     } else {
       console.error("An error occurred during your request.");
     }

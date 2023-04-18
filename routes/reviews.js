@@ -74,8 +74,7 @@ router.delete("/:reviewId", isAuthenticated, async (req, res, next) => {
 // @access  Public
 router.get("/", async (req, res, next) => {
   try {
-    const reviews = await Review.find().populate('user', 'username _id') 
-    .exec();
+    const reviews = await Review.find().populate("user", "username _id").exec();
     res.status(200).json(reviews);
   } catch (error) {
     next(error);

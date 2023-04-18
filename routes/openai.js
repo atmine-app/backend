@@ -1,5 +1,5 @@
-const router = require('express').Router();
-const { summarizeText } = require('../OpenAIconfig');
+const router = require("express").Router();
+const { summarizeText } = require("../OpenAIconfig");
 
 router.post("/summarize", async (req, res) => {
   try {
@@ -10,7 +10,5 @@ router.post("/summarize", async (req, res) => {
     res.status(500).json({ error: "An error occurred during your request." });
   }
 });
-
-
 
 module.exports = router;

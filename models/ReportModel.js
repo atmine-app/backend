@@ -1,3 +1,4 @@
+//this code is not used for now. Future iterations will
 const mongoose = require('mongoose');
 
 const ReportSchema = new mongoose.Schema({
