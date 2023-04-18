@@ -11,23 +11,27 @@ const BookingSchema = new Schema(
     property: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Property",
-      required: true,
+      required: true
     },
     renter: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: function () {
+        return this.status !== "blocked";
+      },
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: function () {
+        return this.status !== "blocked";
+      },
     },
-    serviceFee: { type: Number, required: true },
-    bookingPrice: { type: Number, required: true },
-    totalPrice: { type: Number, required: true },
-    startDate: { type: String, required: true },
-    endDate: { type: String, required: true },
+    serviceFee: { type: Number, required: function () { return this.status !== "blocked"; } },
+    bookingPrice: { type: Number, required: function () { return this.status !== "blocked"; } },
+    totalPrice: { type: Number, required: function () { return this.status !== "blocked"; } },
+    startDate: { type: String, required: function () { return this.status !== "blocked"; } },
+    endDate: { type: String, required: function () { return this.status !== "blocked"; } },
     status: {
       type: String,
       enum: [
@@ -36,16 +40,17 @@ const BookingSchema = new Schema(
         "rejected",
         "cancelled",
         "completed",
-        "blocked",
+        "blocked"
       ],
       default: "confirmed",
     },
-    transactionId: { type: String, required: true },
+    transactionId: { type: String, required: function () { return this.status !== "blocked"; } },
   },
   {
     timestamps: true,
   }
 );
+
 
 // Add the updateCompletedBookings function as a static method of the Booking model
 BookingSchema.statics.updateCompletedBookings = async function () {
