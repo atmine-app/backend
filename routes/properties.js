@@ -53,7 +53,7 @@ router.get("/:propertyId", async (req, res, next) => {
 });
 
 // @desc    Create one property
-// @route   POST /property
+// @route   POST /properties
 // @access  Private
 router.post("/", isAuthenticated, async (req, res, next) => {
   const userId = req.payload._id;
@@ -80,7 +80,7 @@ router.put("/:propertyId", isAuthenticated, async (req, res, next) => {
   }
 });
 
-// @desc    Delete one course
+// @desc    Delete one property
 // @route   DELETE /properties/:propertyId
 // @access  Private
 router.delete("/:propertyId", isAuthenticated, async (req, res, next) => {
@@ -113,7 +113,7 @@ router.get("/:propertyId/votes", async (req, res, next) => {
 });
 
 // @desc   Post and update votes
-// @route   POST /propertyId/vote
+// @route   POST /properties/:propertyId/vote
 // @access  Public
 router.post("/:propertyId/vote", isAuthenticated, async (req, res, next) => {
   const { propertyId } = req.params;
@@ -125,7 +125,7 @@ router.post("/:propertyId/vote", isAuthenticated, async (req, res, next) => {
     amenities,
     averageRating,
   } = req.body;
-  const userId = req.payload._id; // Get the user ID from the JWT payload
+  const userId = req.payload._id; // Get the user id from the JWT payload
 
   try {
     // Find an existing vote by the user

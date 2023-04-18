@@ -19,6 +19,8 @@ router.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
+// @desc    Create a payment Stripe intent
+
 router.post("/api/checkout", async (req, res) => {
   const { id, amount, property, renter, startDate, endDate } = req.body;
 

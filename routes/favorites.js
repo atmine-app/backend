@@ -3,7 +3,7 @@ const Favorite = require("../models/Favorite");
 const { isAuthenticated } = require("../middlewares/jwt");
 
 // @desc   Add property to favorites
-// @route  POST /favorites
+// @route  POST /favorites/:propertyId
 // @access Private
 
 router.post("/:propertyId", isAuthenticated, async (req, res, next) => {

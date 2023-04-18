@@ -3,7 +3,7 @@ const User = require("../models/User");
 const { isAuthenticated } = require("../middlewares/jwt");
 
 // @desc    GET logged-in user details
-// @route   GET /api/v1/users/me
+// @route   GET /user/me
 // @access  Private
 router.get("/me", isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
@@ -11,8 +11,8 @@ router.get("/me", isAuthenticated, (req, res, next) => {
   res.status(200).json(req.payload);
 });
 
-// @desc    UPDATE user properties
-// @route   PUT /api/v1/users
+// @desc    UPDATE user details
+// @route   PUT /user/edit
 // @access  Private
 router.put("/edit", isAuthenticated, async (req, res, next) => {
   try {
@@ -35,7 +35,7 @@ router.put("/edit", isAuthenticated, async (req, res, next) => {
 });
 
 // @desc    Update user status to inactive
-// @route   PUT /api/v1/users/deactivate
+// @route   PUT /user/deactivate
 // @access  Private
 router.put("/deactivate", isAuthenticated, async (req, res, next) => {
   try {

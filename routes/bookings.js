@@ -2,6 +2,9 @@ const router = require("express").Router();
 const Booking = require("../models/Booking");
 const { isAuthenticated } = require("../middlewares/jwt");
 
+
+//nodemailes and transporter config
+
 const nodemailer = require("nodemailer");
 const path = require("path");
 const ejs = require("ejs");
@@ -21,6 +24,8 @@ function formatDate(date) {
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
   return new Date(date).toLocaleDateString("en-GB", options);
 }
+
+//confirmation email
 
 async function sendConfirmationEmail(booking) {
   const { amount, property, renter, startDate, endDate } = booking;
@@ -49,6 +54,8 @@ async function sendConfirmationEmail(booking) {
 
   return transporter.sendMail(message);
 }
+
+//cancelation email
 
 async function sendCancellationEmail(booking) {
   const { property, renter, startDate, endDate } = booking;
@@ -87,8 +94,8 @@ async function populateBooking(bookingId) {
   });
 }
 
-// @desc    Get one reservation
-// @route   GET /booking/:bookinId
+// @desc    Get one booking
+// @route   GET /bookings/:bookingId
 // @access  Private
 router.get("/:bookingId", isAuthenticated, async (req, res, next) => {
   const { bookingId } = req.params;
@@ -106,8 +113,8 @@ router.get("/:bookingId", isAuthenticated, async (req, res, next) => {
   }
 });
 
-/// @desc Create one booking
-// @route POST /booking
+// @desc Create one booking
+// @route POST /bookings
 // @access Private
 router.post("/", isAuthenticated, async (req, res, next) => {
   try {
@@ -131,7 +138,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
   }
 });
 
-// @desc    Edit one booking
+// @desc    Edit One booking
 // @route   PUT /bookings/:bookingId
 // @access  Private
 router.put("/:bookingId", isAuthenticated, async (req, res, next) => {
@@ -168,8 +175,8 @@ router.put("/:bookingId", isAuthenticated, async (req, res, next) => {
   }
 });
 
-// @desc    Delete one course
-// @route   DELETE /courses/:courseId
+// @desc    Delete One booking
+// @route   DELETE /bookings/:bookingId
 // @access  Private
 router.delete("/:bookingId", isAuthenticated, async (req, res, next) => {
   const { bookingId } = req.params;
@@ -185,8 +192,8 @@ router.delete("/:bookingId", isAuthenticated, async (req, res, next) => {
   }
 });
 
-// @desc    get all bookings
-// @route   GET /
+// @desc    Get All bookings
+// @route   GET /bookings
 // @access  Private
 
 router.get("/", isAuthenticated, async (req, res, next) => {

@@ -4,7 +4,7 @@ const { isAuthenticated } = require("../middlewares/jwt");
 
 // @desc    Get all reviews from one property
 // @route   GET /reviews/:propertyId
-// @access  public
+// @access  Public
 router.get("/:propertyId", async (req, res, next) => {
   const { propertyId } = req.params;
 
