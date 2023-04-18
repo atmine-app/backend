@@ -262,9 +262,9 @@ Vote in the database have the following properties:
 ### Auth Routes
 | Action           | Method    | Endpoint             | Req.body                        | Private/Public |
 |------------------|-----------|----------------------|---------------------------------|-----------------|
-| SIGN UP user     | POST      | /api/v1/auth/signup  | { username, email, password }   |    Public |                 
-| LOG IN user      | POST      | /api/v1/auth/login   | { email, password }             |    Public |                  
-| GET logged in user   | GET     | /api/v1/auth/me    |   | Private |
+| SIGN UP user     | POST      | auth/signup  | { username, email, password }   |    Public |                 
+| LOG IN user      | POST      | auth/login   | { email, password }             |    Public |                  
+| GET logged in user   | GET     | auth/me    |   | Private |
 
 ### Property routes
 
@@ -284,12 +284,12 @@ Vote in the database have the following properties:
 ### Booking routes
 | Action                    | Method | Endpoint                    | Req.body                                         | Private/Public |
 |---------------------------|--------|-----------------------------|--------------------------------------------------|----------------|
-| Get one booking           | GET    | /api/v1/bookings/:bookingId |                                                  | Private        |
-| Create one booking        | POST   | /api/v1/bookings/           | { property, renter, startDate, endDate }        | Private        |
-| Edit one booking          | PUT    | /api/v1/bookings/:bookingId | { property, renter, startDate, endDate, status }| Private        |
-| Delete one booking        | DELETE | /api/v1/bookings/:bookingId |                                                  | Private        |
-| Get all bookings          | GET    | /api/v1/bookings/           |                                                  | Private        |
-| Block a date range        | POST   | /api/v1/bookings/block      | { property, startDate, endDate }                 | Private        |
+| Get one booking           | GET    | bookings/:bookingId |                                                  | Private        |
+| Create one booking        | POST   | bookings/           | { property, renter, startDate, endDate }        | Private        |
+| Edit one booking          | PUT    | bookings/:bookingId | { property, renter, startDate, endDate, status }| Private        |
+| Delete one booking        | DELETE | bookings/:bookingId |                                                  | Private        |
+| Get all bookings          | GET    | bookings/           |                                                  | Private        |
+| Block a date range        | POST   | bookings/block      | { property, startDate, endDate }                 | Private        |
 
 
 ### Favorites Routes
